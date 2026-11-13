@@ -65,11 +65,12 @@ def generar_respuesta_y_audio(prompt_usuario):
             tts.write_to_fp(fp)
             fp.seek(0)
             st.audio(fp, format='audio/mp3')
-            return # Si salió bien, salimos de la función
+            return # Salimos de la función si todo salió bien
             
         except Exception as e:
+            # Si el error es por alta demanda (503) y quedan intentos, esperamos 5 segundos
             if "503" in str(e) and intento < max_intentos - 1:
-                time.sleep(2) # Espera 2 segundos y reintenta
+                time.sleep(5) 
                 continue
             else:
                 st.error(f"Error al conectar con la API de Gemini: {e}")

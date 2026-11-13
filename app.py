@@ -43,28 +43,37 @@ INSTRUCCIONES_SISTEMA = (
 )
 
 def generar_respuesta_y_audio(prompt_usuario):
-    try:
-        response = client.models.generate_content(
-            model="gemini-3.8-flash",
-            contents=prompt_usuario,
-            config=types.GenerateContentConfig(
-                system_instruction=INSTRUCCIONES_SISTEMA,
-                temperature=0.4,
+    import time
+    max_intentos = 3
+    for intento in range(max_intentos):
+        try:
+            response = client.models.generate_content(
+                model="gemini-3.8-flash",
+                contents=prompt_usuario,
+                config=types.GenerateContentConfig(
+                    system_instruction=INSTRUCCIONES_SISTEMA,
+                    temperature=0.4,
+                )
             )
-        )
-        
-        texto_respuesta = response.text
-        st.session_state.historial.append({"role": "model", "text": texto_respuesta})
-        
-        # Convertir texto a audio MP3
-        tts = gTTS(text=texto_respuesta, lang='es')
-        fp = io.BytesIO()
-        tts.write_to_fp(fp)
-        fp.seek(0)
-        st.audio(fp, format='audio/mp3')
-        
-    except Exception as e:
-        st.error(f"Error al conectar con la API de Gemini: {e}")
+            
+            texto_respuesta = response.text
+            st.session_state.historial.append({"role": "model", "text": texto_respuesta})
+            
+            # Convertir texto a audio MP3
+            tts = gTTS(text=texto_respuesta, lang='es')
+            fp = io.BytesIO()
+            tts.write_to_fp(fp)
+            fp.seek(0)
+            st.audio(fp, format='audio/mp3')
+            return # Si salió bien, salimos de la función
+            
+        except Exception as e:
+            if "503" in str(e) and intento < max_intentos - 1:
+                time.sleep(2) # Espera 2 segundos y reintenta
+                continue
+            else:
+                st.error(f"Error al conectar con la API de Gemini: {e}")
+                break
 
 # Botón para activar el resumen de noticias
 if st.button("📰 Generar resumen de las últimas 24 horas"):

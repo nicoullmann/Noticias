@@ -82,7 +82,6 @@ def generar_respuesta_y_audio(prompt_usuario):
         contents=contenidos,
         config=types.GenerateContentConfig(
             system_instruction=INSTRUCCIONES_SISTEMA,
-            tools=[{"google_search": {}}],
             temperature=0.4,
         )
     )

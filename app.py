@@ -75,7 +75,7 @@ def generar_respuesta_y_audio(prompt_usuario):
         contenidos.append(types.Content(role=msg["role"], parts=[types.Part.from_text(text=msg["text"])]))
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-1.5-flash",
         contents=contenidos,
         config=types.GenerateContentConfig(
             system_instruction=INSTRUCCIONES_SISTEMA,

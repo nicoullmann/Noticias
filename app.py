@@ -48,7 +48,7 @@ def generar_respuesta_y_audio(prompt_usuario):
     for intento in range(max_intentos):
         try:
             response = client.models.generate_content(
-                model="gemini-1.5-pro",
+                model="gemini-3.8-flash",
                 contents=prompt_usuario,
                 config=types.GenerateContentConfig(
                     system_instruction=INSTRUCCIONES_SISTEMA,
@@ -65,11 +65,10 @@ def generar_respuesta_y_audio(prompt_usuario):
             tts.write_to_fp(fp)
             fp.seek(0)
             st.audio(fp, format='audio/mp3')
-            return # Salimos de la función si todo salió bien
+            return # Salimos si salió todo bien
             
         except Exception as e:
-            # Si el error es por alta demanda (503) y quedan intentos, esperamos 5 segundos
-            if "503" in str(e) and intento < max_intentos - 1:
+            if ("503" in str(e) or "UNAVAILABLE" in str(e)) and intento < max_intentos - 1:
                 time.sleep(5) 
                 continue
             else:

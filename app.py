@@ -67,21 +67,11 @@ MODO PROFUNDIZACIÓN (CUANDO EL USUARIO PIDA MÁS DETALLE):
 """
 
 def generar_respuesta_y_audio(prompt_usuario):
-    fecha_actual = datetime.datetime.now().strftime("%A %d de %B de %Y, %H:%M")
-    mensaje_con_fecha = f"[Fecha y hora actual: {fecha_actual}] {prompt_usuario}"
-    
-    st.session_state.historial.append({"role": "user", "text": mensaje_con_fecha})
-    
-    # Construir contexto de conversación
-    contenidos = []
-    for msg in st.session_state.historial[-10:]: # Mantiene memoria de los últimos 10 intercambios
-        contenidos.append(types.Content(role=msg["role"], parts=[types.Part.from_text(text=msg["text"])]))
-
+    # Llamada simplificada y directa a la API
     response = client.models.generate_content(
         model="gemini-1.5-flash",
-        contents=contenidos,
+        contents=prompt_usuario,
         config=types.GenerateContentConfig(
-            system_instruction=INSTRUCCIONES_SISTEMA,
             temperature=0.4,
         )
     )
@@ -90,11 +80,11 @@ def generar_respuesta_y_audio(prompt_usuario):
     st.session_state.historial.append({"role": "model", "text": texto_respuesta})
     
     # Convertir texto a audio MP3
-    tts = gTTS(text=texto_respuesta, lang="es", tld="com")
-    audio_bytes = io.BytesIO()
-    tts.write_to_fp(audio_bytes)
-    audio_bytes.seek(0)
-    st.session_state.ultimo_audio = audio_bytes.read()
+    tts = gTTS(text=texto_respuesta, lang='es')
+    fp = io.BytesIO()
+    tts.write_to_fp(fp)
+    fp.seek(0)
+    st.audio(fp, format='audio/mp3')
 
 # 3. INTERFAZ VISUAL PARA EL AUTO
 st.title("🎙️ Noticias del Día")

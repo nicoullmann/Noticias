@@ -5,6 +5,9 @@ from gtts import gTTS
 import io
 import datetime
 
+# Inicializar el cliente oficial con la llave de Streamlit
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+
 # Configuración de página optimizada para iPhone
 st.set_page_config(page_title="Noticias Mañana", page_icon="🎙️", layout="centered")
 

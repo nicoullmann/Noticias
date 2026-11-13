@@ -48,7 +48,7 @@ def generar_respuesta_y_audio(prompt_usuario):
     for intento in range(max_intentos):
         try:
             response = client.models.generate_content(
-                model="gemini-3.8-flash",
+                model="gemini-1.5-pro",
                 contents=prompt_usuario,
                 config=types.GenerateContentConfig(
                     system_instruction=INSTRUCCIONES_SISTEMA,

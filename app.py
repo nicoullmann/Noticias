@@ -45,7 +45,7 @@ INSTRUCCIONES_SISTEMA = (
 def generar_respuesta_y_audio(prompt_usuario):
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3.8-flash",
             contents=prompt_usuario,
             config=types.GenerateContentConfig(
                 system_instruction=INSTRUCCIONES_SISTEMA,
